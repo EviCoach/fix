@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_all_services"
+        android:enabled="true"
+        android:icon="@drawable/ic_all_services_24dp"
+        android:title="All services"
+        app:showAsAction="ifRoom" />
+    <item
+    android:id="@+id/action_nearby_services"
+    android:enabled="true"
+    android:icon="@drawable/ic_location_service_24dp"
+    android:title="Nearby services"
+    app:showAsAction="ifRoom" />
+    <item
+    android:id="@+id/action_my_services"
+    android:enabled="true"
+    android:icon="@drawable/ic_my_services_24dp"
+    android:title="My services"
+    app:showAsAction="ifRoom" />
+</menu>
