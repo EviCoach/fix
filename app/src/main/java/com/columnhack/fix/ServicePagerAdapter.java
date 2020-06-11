@@ -20,7 +20,7 @@ public class ServicePagerAdapter extends FragmentStatePagerAdapter {
             case Service.ALL_SERVICES:
              return new ServicesFragment();
             case Service.NEAR_BY_SERVICES:
-                return new NearByServiceFragment();
+                return new NearByServicesFragment();
             case Service.MY_SERVICES:
                 return new MyServicesFragment();
         }

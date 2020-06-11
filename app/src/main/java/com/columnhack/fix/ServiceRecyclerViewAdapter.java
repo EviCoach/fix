@@ -1,6 +1,7 @@
 package com.columnhack.fix;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,14 @@ public class ServiceRecyclerViewAdapter extends
     @Override
     public ServiceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mLayoutInflater.inflate(R.layout.service_items, parent, false);
+        itemView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO: display the selected service, not just a blank service
+                Intent intent = new Intent(mContext, ServiceDetailActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
         return new ServiceHolder(itemView);
     }
 
@@ -51,7 +60,7 @@ public class ServiceRecyclerViewAdapter extends
         public ServiceHolder(@NonNull View itemView) {
             super(itemView);
             serviceImage = itemView.findViewById(R.id.service_image);
-            titleView = itemView.findViewById(R.id.service_title);
+            titleView = itemView.findViewById(R.id.nearby_service_desc);
             descriptionView = itemView.findViewById(R.id.service_desc);
         }
 

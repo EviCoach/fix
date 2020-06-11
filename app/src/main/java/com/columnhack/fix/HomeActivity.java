@@ -1,11 +1,17 @@
 package com.columnhack.fix;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -37,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                // TODO: change colors of selected views to make them stand out
                 switch (position){
                     case Service.ALL_SERVICES:
                         mBottomNavigationView.getMenu().findItem(R.id.action_all_services)
@@ -59,8 +66,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
-
         mBottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -82,20 +87,15 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-//
-//        switch (menuItem.getItemId()) {
-//            case R.id.action_all_services:
-//                mServiceViewPager.setCurrentItem(0);
-//                break;
-//            case R.id.action_nearby_services:
-//                mServiceViewPager.setCurrentItem(1);
-//                break;
-//            case R.id.action_my_services:
-//                mServiceViewPager.setCurrentItem(2);
-//                break;
-//        }
-//        return true;
-//    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search_service);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        return true;
+    }
 }
