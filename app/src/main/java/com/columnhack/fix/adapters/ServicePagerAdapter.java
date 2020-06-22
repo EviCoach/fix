@@ -1,9 +1,14 @@
-package com.columnhack.fix;
+package com.columnhack.fix.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.columnhack.fix.fragments.MyServicesFragment;
+import com.columnhack.fix.fragments.NearByServicesFragment;
+import com.columnhack.fix.models.Service;
+import com.columnhack.fix.fragments.ServicesFragment;
 
 public class ServicePagerAdapter extends FragmentStatePagerAdapter {
 

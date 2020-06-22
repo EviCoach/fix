@@ -1,4 +1,4 @@
-package com.columnhack.fix;
+package com.columnhack.fix.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.columnhack.fix.R;
+import com.columnhack.fix.ServicesLab;
+import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
+import com.columnhack.fix.models.Service;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;

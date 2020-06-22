@@ -1,4 +1,4 @@
-package com.columnhack.fix;
+package com.columnhack.fix.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -10,15 +10,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.columnhack.fix.fragments.MyServicesFragment;
+import com.columnhack.fix.R;
+import com.columnhack.fix.fragments.ServicesFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        MyServicesFragment.onFragmentBtnSelected{
+        implements NavigationView.OnNavigationItemSelectedListener
+        {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarToggle;
@@ -76,10 +77,5 @@ public class MainActivity extends AppCompatActivity
                 return true;
         }
         return true;
-    }
-
-    @Override
-    public void onButtonSelected() {
-        loadFragment(new ServicesFragment(), R.id.all_services_menu);
     }
 }

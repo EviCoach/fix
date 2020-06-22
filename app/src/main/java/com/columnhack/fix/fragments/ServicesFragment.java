@@ -1,4 +1,4 @@
-package com.columnhack.fix;
+package com.columnhack.fix.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.columnhack.fix.R;
+import com.columnhack.fix.ServicesLab;
+import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
+import com.columnhack.fix.models.Service;
 
 import java.util.List;
 

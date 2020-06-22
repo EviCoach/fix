@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fix</string>
+    <string name="app_name">FixFind</string>
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="image_for_this_service">Image for this service</string>
@@ -7,4 +7,10 @@
     <string name="search_hint">Search services</string>
     <string name="title_activity_nearby_services_maps">Map</string>
     <string name="placeholder">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">192858062084698</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb192858062084698</string>
+    <string name="removed_snackbar_message">Service removed</string>
+    <string name="undo_delete">UNDO</string>
+
 </resources>

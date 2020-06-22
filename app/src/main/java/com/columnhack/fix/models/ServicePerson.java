@@ -1,4 +1,4 @@
-package com.columnhack.fix;
+package com.columnhack.fix.models;
 
 import java.util.UUID;
 

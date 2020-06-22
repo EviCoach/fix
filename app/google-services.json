@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "613651960428",
+    "firebase_url": "https://fixfind.firebaseio.com",
+    "project_id": "fixfind",
+    "storage_bucket": "fixfind.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613651960428:android:1093fd1be28d24dee8fe49",
+        "android_client_info": {
+          "package_name": "com.columnhack.fix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613651960428-10sppg459pj6u44hnh6mp6hud8ch7c2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.columnhack.fix",
+            "certificate_hash": "7976f894f027d8c753896b118e44cd3343d3a8b6"
+          }
+        },
+        {
+          "client_id": "613651960428-a9moer2ohn4p4l2n85a8uqlpq77lgs1s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcwTlbIggesS2DQkblaTOtp_Zm_jqJhgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613651960428-a9moer2ohn4p4l2n85a8uqlpq77lgs1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

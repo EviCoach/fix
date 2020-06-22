@@ -1,4 +1,4 @@
-package com.columnhack.fix;
+package com.columnhack.fix.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.columnhack.fix.R;
+import com.columnhack.fix.models.Service;
 
 import java.util.List;
 

@@ -10,9 +10,6 @@
         android:id="@+id/map_card"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:elevation="4dp"
-        map:cardElevation="8dp"
-        map:cardMaxElevation="4dp"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent">
@@ -28,6 +25,8 @@
         android:id="@+id/nearby_services_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:elevation="4dp"
+        map:cardElevation="8dp"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"

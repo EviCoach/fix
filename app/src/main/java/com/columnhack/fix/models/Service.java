@@ -1,7 +1,8 @@
-package com.columnhack.fix;
+package com.columnhack.fix.models;
 
 import android.location.Location;
-import android.media.Image;
+
+import com.columnhack.fix.models.ServicePerson;
 
 import java.util.UUID;
 
@@ -18,6 +19,17 @@ public class Service {
     private Location mLocation;
     private String[] mServiceImageUrls;
     private ServicePerson mServicePerson;
+
+    //TODO: use the string array later for service images
+    private int[] mServiceImgs;
+
+    public int[] getServiceImgs() {
+        return mServiceImgs;
+    }
+
+    public void setServiceImgs(int[] serviceImgs) {
+        mServiceImgs = serviceImgs;
+    }
 
     public Service(){
         this.id = UUID.randomUUID();

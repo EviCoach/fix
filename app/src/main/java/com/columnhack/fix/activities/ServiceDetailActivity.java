@@ -1,9 +1,12 @@
-package com.columnhack.fix;
+package com.columnhack.fix.activities;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+
+import com.columnhack.fix.R;
+import com.columnhack.fix.fragments.ServiceDetailFragment;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
