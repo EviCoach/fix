@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServicesLab;
+import com.columnhack.fix.ServiceLab;
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,11 +29,12 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
 
     List<Service> mNearbyServices;
     private RecyclerView mNearbyServicesRecyclerView;
+    private NearbyServicesRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNearbyServices = ServicesLab.getInstance(getActivity()).getNearbyServices();
+        mNearbyServices = ServiceLab.getInstance(getActivity()).getNearbyServices();
     }
 
     @Nullable
@@ -42,7 +43,8 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
         View view = inflater.inflate(R.layout.fragment_nearby_services, container, false);
         mNearbyServicesRecyclerView = view.findViewById(R.id.nearby_services_recyclerview);
         mNearbyServicesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mNearbyServicesRecyclerView.setAdapter(new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices));
+        mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
+        mNearbyServicesRecyclerView.setAdapter(mAdapter);
         return view;
     }
 

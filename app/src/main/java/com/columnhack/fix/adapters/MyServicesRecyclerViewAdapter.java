@@ -1,6 +1,7 @@
 package com.columnhack.fix.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +23,13 @@ public class MyServicesRecyclerViewAdapter extends
 
     private final Context mContext;
     private final LayoutInflater mLayoutInflater;
-    private List<Service> mNearbyServices;
+    private List<Service> mMyServices;
     private ItemTouchHelper mTouchHelper;
     private View mItemView;
 
     public MyServicesRecyclerViewAdapter(Context context, List<Service> services) {
         mContext = context;
-        mNearbyServices = services;
+        mMyServices = services;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -41,27 +42,30 @@ public class MyServicesRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull MyServicesHolder holder, int position) {
-        holder.serviceTitleView.setText(mNearbyServices.get(position).getTitle());
+        holder.serviceTitleView.setText(mMyServices.get(position).getTitle());
+        // Very necessary, if you remove the following line, you'll get this exception:
+        // No suitable parent found from the given view. Please provide a valid view
+        holder.setIsRecyclable(false);
     }
 
     @Override
     public int getItemCount() {
-        return mNearbyServices.size();
+        return mMyServices.size();
     }
 
     /*ItemTouchHelper*/
     @Override
     public void onItemSwiped(final int position) {
-        final Service temporyService = mNearbyServices.get(position);
-        mNearbyServices.remove(position);
+        final Service temporaryService = mMyServices.get(position);
+        mMyServices.remove(position);
         Snackbar undoSnackbar = Snackbar.make(mItemView.getRootView(), R.string.removed_snackbar_message, Snackbar.LENGTH_LONG);
         undoSnackbar.setAction(R.string.undo_delete, new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                mNearbyServices.add(temporyService);
+                mMyServices.add(temporaryService);
                 notifyItemInserted(position);
             }
-        });
+        }).setActionTextColor(Color.RED);
         undoSnackbar.show();
 
         notifyItemRemoved(position);

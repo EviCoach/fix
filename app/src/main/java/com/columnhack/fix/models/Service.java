@@ -10,7 +10,8 @@ public class Service {
 
     public static final int ALL_SERVICES = 0;
     public static final int NEAR_BY_SERVICES = 1;
-    public static final int MY_SERVICES = 2;
+    public static final int MY_ACCOUNT = 2;
+    public static final int HELP = 3;
 
     private UUID id;
     private String mTitle;

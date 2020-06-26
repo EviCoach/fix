@@ -7,5 +7,4 @@
         android:iconTint="@android:color/white"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
-
 </menu>

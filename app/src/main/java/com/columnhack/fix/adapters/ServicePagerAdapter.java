@@ -5,7 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.columnhack.fix.fragments.MyServicesFragment;
+import com.columnhack.fix.fragments.AccountFragment;
+import com.columnhack.fix.fragments.HelpFragment;
 import com.columnhack.fix.fragments.NearByServicesFragment;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.fragments.ServicesFragment;
@@ -26,14 +27,16 @@ public class ServicePagerAdapter extends FragmentStatePagerAdapter {
              return new ServicesFragment();
             case Service.NEAR_BY_SERVICES:
                 return new NearByServicesFragment();
-            case Service.MY_SERVICES:
-                return new MyServicesFragment();
+            case Service.MY_ACCOUNT:
+                return new AccountFragment();
+            case Service.HELP:
+                return new HelpFragment();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 }

@@ -12,21 +12,30 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServicesLab;
+import com.columnhack.fix.ServiceLab;
 import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 public class ServicesFragment extends Fragment {
 
+    /*var*/
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseReference;
     List<Service> mServices;
+
+    /*widgets*/
     private RecyclerView mRecyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mServices = ServicesLab.getInstance(getActivity()).getServices();
+        mServices = ServiceLab.getInstance(getActivity()).getServices();
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mDatabase.getReference("services");
     }
 
     @Nullable

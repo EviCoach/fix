@@ -5,18 +5,24 @@
         android:id="@+id/action_all_services"
         android:enabled="true"
         android:icon="@drawable/ic_all_services_24dp"
-        android:title="All services"
+        android:title="Services"
         app:showAsAction="ifRoom" />
     <item
-    android:id="@+id/action_nearby_services"
-    android:enabled="true"
-    android:icon="@drawable/ic_location_service_24dp"
-    android:title="Nearby services"
-    app:showAsAction="ifRoom" />
+        android:id="@+id/action_nearby_services"
+        android:enabled="true"
+        android:icon="@drawable/ic_location_service_24dp"
+        android:title="Nearby services"
+        app:showAsAction="ifRoom" />
     <item
-    android:id="@+id/action_my_services"
-    android:enabled="true"
-    android:icon="@drawable/ic_my_services_24dp"
-    android:title="My services"
-    app:showAsAction="ifRoom" />
+        android:id="@+id/action_my_account"
+        android:enabled="true"
+        android:icon="@drawable/ic_my_account_24"
+        android:title="Account"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_help"
+        android:enabled="true"
+        android:icon="@drawable/ic_service_help_24"
+        android:title="Help"
+        app:showAsAction="ifRoom" />
 </menu>

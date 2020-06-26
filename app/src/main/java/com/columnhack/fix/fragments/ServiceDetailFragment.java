@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServicesLab;
+import com.columnhack.fix.ServiceLab;
 import com.columnhack.fix.adapters.ServiceImagesPagerAdapter;
 import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
@@ -37,7 +37,7 @@ public class ServiceDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO: change to real similar and related services later
-        mSimilarServices = ServicesLab.getInstance(getActivity()).getNearbyServices();
+        mSimilarServices = ServiceLab.getInstance(getActivity()).getNearbyServices();
         int position = 0;
         for(Service service : mSimilarServices){
             Fragment imgFragment = new ImgFragment();

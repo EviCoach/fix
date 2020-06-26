@@ -1,5 +1,7 @@
 package com.columnhack.fix.activities;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,9 +52,14 @@ public class HomeActivity extends AppCompatActivity {
                     case Service.NEAR_BY_SERVICES:
                         mBottomNavigationView.getMenu().findItem(R.id.action_nearby_services)
                                 .setChecked(true);
+
                         break;
-                    case Service.MY_SERVICES:
-                        mBottomNavigationView.getMenu().findItem(R.id.action_my_services)
+                    case Service.MY_ACCOUNT:
+                        mBottomNavigationView.getMenu().findItem(R.id.action_my_account)
+                                .setChecked(true);
+                        break;
+                    case Service.HELP:
+                        mBottomNavigationView.getMenu().findItem(R.id.action_help)
                                 .setChecked(true);
                         break;
                 }
@@ -75,9 +82,11 @@ public class HomeActivity extends AppCompatActivity {
                             case R.id.action_nearby_services:
                                 mServiceViewPager.setCurrentItem(Service.NEAR_BY_SERVICES);
                                 break;
-                            case R.id.action_my_services:
-                                mServiceViewPager.setCurrentItem(Service.MY_SERVICES);
+                            case R.id.action_my_account:
+                                mServiceViewPager.setCurrentItem(Service.MY_ACCOUNT);
                                 break;
+                            case R.id.action_help:
+                                mServiceViewPager.setCurrentItem(Service.HELP);
                         }
                         return true;
                     }
@@ -85,7 +94,10 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
-
+    private void setActiveFragmentColor() {
+        mBottomNavigationView.setItemTextColor(ColorStateList.valueOf(Color.WHITE));
+        mBottomNavigationView.setItemIconTintList(ColorStateList.valueOf(Color.WHITE));
+    }
 
 
     @Override
