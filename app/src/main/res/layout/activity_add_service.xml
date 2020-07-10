@@ -1,6 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/add_img_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/add_service_img" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/service_img_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_img_view"
+        tools:listitem="@layout/service_img_items" />
+
+    <EditText
+        android:id="@+id/service_title_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Service Title"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/service_img_recycler_view"
+        app:layout_constraintHorizontal_bias="0.09"
+        app:layout_constraintStart_toStartOf="@+id/service_img_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/service_img_recycler_view" />
+
+    <EditText
+        android:id="@+id/service_address_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Service Address"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/service_title_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/service_title_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/service_email_edit_text" />
+
+    <ImageView
+        android:id="@+id/choose_service_location"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/add_img_view"
+        app:layout_constraintStart_toEndOf="@+id/add_img_view"
+        app:layout_constraintTop_toTopOf="@+id/add_img_view"
+        app:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+    <EditText
+        android:id="@+id/service_description_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Service Description"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/service_address_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/service_address_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/service_address_edit_text" />
+
+    <EditText
+        android:id="@+id/service_email_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Service Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="@+id/service_title_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/service_title_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/service_phone_edit_text" />
+
+    <EditText
+        android:id="@+id/service_phone_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Service Phone"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="@+id/service_title_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/service_title_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/service_title_edit_text" />
+
+    <TextView
+        android:id="@+id/no_images_text_view"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="Add three or more images for this service"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/service_title_edit_text"
+        app:layout_constraintEnd_toEndOf="@+id/service_img_recycler_view"
+        app:layout_constraintStart_toStartOf="@+id/service_img_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/add_img_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

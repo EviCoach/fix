@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="From Camera"
+        android:id="@+id/popup_camera"/>
+    <item android:title="From Gallery"
+        android:id="@+id/popup_gallery"/>
+</menu>
