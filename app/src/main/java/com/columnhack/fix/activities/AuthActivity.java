@@ -13,11 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.columnhack.fix.R;
+import com.columnhack.fix.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -97,7 +99,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void signup() {
         if (!LOGIN) {
-            String email = mEmailTextView.getText().toString();
+            final String email = mEmailTextView.getText().toString();
             String password = mPasswordTextView.getText().toString();
             String confirmPassword = mConfirmPasswordTextView.getText().toString();
 
@@ -106,7 +108,6 @@ public class AuthActivity extends AppCompatActivity {
                         .show();
                 return;
             }
-            ;
 
             if (!password.equals(confirmPassword)) {
                 // Password did not match
@@ -123,6 +124,18 @@ public class AuthActivity extends AppCompatActivity {
                                             .show();
                                 } else {
                                     mAuth.getCurrentUser().sendEmailVerification();
+
+                                    User user = new User();
+                                    user.setName(email.substring(0, email.indexOf("@")));
+                                    user.setPhone("Will implemented later");
+                                    user.setProfile_image("Will be implemented later");
+                                    user.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                    FirebaseDatabase.getInstance().getReference()
+                                            .child("users")
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .setValue(user);
+
                                     Toast.makeText(AuthActivity.this, "Check your mail inbox for a verification link",
                                             Toast.LENGTH_SHORT).show();
                                     mAuth.signOut();

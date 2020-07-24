@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.columnhack.fix.R;
 import com.columnhack.fix.activities.AuthActivity;
 import com.columnhack.fix.activities.MyServices;
+import com.columnhack.fix.utility.ServiceLab;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountFragment extends Fragment {
@@ -48,6 +49,11 @@ public class AccountFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     private void logout() {

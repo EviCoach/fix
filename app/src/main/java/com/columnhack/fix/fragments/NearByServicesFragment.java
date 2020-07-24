@@ -1,9 +1,13 @@
 package com.columnhack.fix.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,35 +16,124 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServiceLab;
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
+import com.columnhack.fix.utility.ServiceLab;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.os.Looper.getMainLooper;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class NearByServicesFragment extends Fragment implements OnMapReadyCallback {
 
+    public static final int LOCATION_REQUEST_CODE = 12;
     private MapView mMapView;
     private GoogleMap mMap;
 
-    List<Service> mNearbyServices;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest mLocationRequest;
+    private Location mServiceLocation;
+    private NearbyLocationCallback mLocationCallback;
+
+    List<Service> mNearbyServices = new ArrayList<>();
     private RecyclerView mNearbyServicesRecyclerView;
     private NearbyServicesRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNearbyServices = ServiceLab.getInstance(getActivity()).getNearbyServices();
+        mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
+
+        requestLocationUpdates();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private void requestLocationUpdates() {
+        if (checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (mServiceLocation == null) {
+                mFusedLocationClient = new FusedLocationProviderClient(getActivity());
+                mLocationRequest = new LocationRequest();
+                mLocationCallback = new NearbyLocationCallback();
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                mLocationRequest.setFastestInterval(2000);
+                mLocationRequest.setInterval(2000);
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, getMainLooper());
+                if (mServiceLocation != null) {
+                    mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+                }
+            }
+
+            return;
+        } else {
+            // Request for permission here
+            String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION};
+            requestPermissions(permissions, LOCATION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (permissions.length < 1) {
+                throw new RuntimeException("no permissions on request result");
+            }
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                // permission granted
+                requestLocationUpdates();
+            } else {
+                if (shouldShowRequestPermissionRationale(
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // User declined but I can still ask for more and show rationale
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION},
+                            LOCATION_REQUEST_CODE);
+                } else {
+                    // User declined and I can't ask more
+                    Toast.makeText(getActivity(), "You need file access permissions to upload service images",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_nearby_services, container, false);
+
+
         mNearbyServicesRecyclerView = view.findViewById(R.id.nearby_services_recyclerview);
         mNearbyServicesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
@@ -52,7 +145,7 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView = view.findViewById(R.id.nearby_services_map);
-        if(mMapView != null){
+        if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
             mMapView.getMapAsync(this);
@@ -63,5 +156,31 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mMap = googleMap;
+
+        // customize the app with service location and markers here
+        addServiceMarkers();
+    }
+
+    private void addServiceMarkers() {
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(6.8, 3.1))).setVisible(true);
+        mMap.addMarker(new MarkerOptions().position(new LatLng(7, 3.5))).setVisible(true);
+        mMap.addMarker(new MarkerOptions().position(new LatLng(7, 4))).setVisible(true);
+
+        // Move the camera instantly to location with zoom of 15
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(7, 3.9), 10));
+        // zoom in, animating the camera
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+    }
+
+    private class NearbyLocationCallback extends LocationCallback {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            mServiceLocation = locationResult.getLastLocation();
+            ServiceLab.getInstance(getActivity()).setCurrentLocation(mServiceLocation);
+            mNearbyServices = ServiceLab.getInstance(getActivity()).getNearbyServices(mAdapter, "query");
+        }
     }
 }

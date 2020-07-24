@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/use_current_location"
+        android:title="@string/use_current_location"/>
+    <item android:id="@+id/location_from_map"
+        android:title="@string/choose_from_map"/>
+</menu>

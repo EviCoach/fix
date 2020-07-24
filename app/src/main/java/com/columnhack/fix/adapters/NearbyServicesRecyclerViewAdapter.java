@@ -27,6 +27,11 @@ public class NearbyServicesRecyclerViewAdapter extends
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    public void changeServices(List<Service> services){
+        mNearbyServices = services;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public NearbyServicesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

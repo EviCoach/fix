@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
+import com.columnhack.fix.utility.ServiceLab;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.touchhelpers.ItemTouchHelperAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,6 +32,11 @@ public class MyServicesRecyclerViewAdapter extends
         mContext = context;
         mMyServices = services;
         mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public void refreshServices(){
+        mMyServices = ServiceLab.getInstance(mContext).getMyServices(this);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -74,6 +80,7 @@ public class MyServicesRecyclerViewAdapter extends
     public void setTouchHelper(ItemTouchHelper touchHelper){
         mTouchHelper = touchHelper;
     }
+
     public class MyServicesHolder extends RecyclerView.ViewHolder {
         private TextView serviceTitleView;
         public MyServicesHolder(@NonNull View itemView) {

@@ -12,5 +12,7 @@
     <string name="facebook_login_protocol_scheme" translatable="false">fb192858062084698</string>
     <string name="removed_snackbar_message">Service removed</string>
     <string name="undo_delete">UNDO</string>
+    <string name="choose_from_map">Choose From Map</string>
+    <string name="use_current_location">Use Current Location</string>
 
 </resources>

@@ -11,12 +11,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServiceLab;
+import com.columnhack.fix.utility.ServiceLab;
 import com.columnhack.fix.adapters.MyServicesRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.touchhelpers.MyServicesItemTouchHelperCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyServices extends AppCompatActivity {
@@ -28,17 +29,17 @@ public class MyServices extends AppCompatActivity {
 
     /*vars*/
     private MyServicesRecyclerViewAdapter mAdapter;
-    private List<Service> mMyServices;
+    private List<Service> mMyServices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_services);
 
-        mMyServices = ServiceLab.getInstance(this).getMyServices();
+        forceRefreshUI();
 
         mAddNewServiceFab = findViewById(R.id.add_new_service);
-        mAddNewServiceFab.setOnClickListener(new View.OnClickListener(){
+        mAddNewServiceFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyServices.this, AddServiceActivity.class);
@@ -48,7 +49,8 @@ public class MyServices extends AppCompatActivity {
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_my_services);
         mRecyclerView = findViewById(R.id.my_services_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MyServicesRecyclerViewAdapter(this, mMyServices);
+
+
 
         MyServicesItemTouchHelperCallback callback = new MyServicesItemTouchHelperCallback(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -59,11 +61,16 @@ public class MyServices extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                mAdapter.notifyDataSetChanged();
-
-//                mSwipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(true);
+                mAdapter.refreshServices();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
 
+    private void forceRefreshUI() {
+        mAdapter = new MyServicesRecyclerViewAdapter(this, mMyServices);
+        mMyServices = ServiceLab.getInstance(this).getMyServices(mAdapter);
+        mAdapter.refreshServices();
     }
 }

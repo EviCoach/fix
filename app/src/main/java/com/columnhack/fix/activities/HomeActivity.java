@@ -94,6 +94,11 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     private void setActiveFragmentColor() {
         mBottomNavigationView.setItemTextColor(ColorStateList.valueOf(Color.WHITE));
         mBottomNavigationView.setItemIconTintList(ColorStateList.valueOf(Color.WHITE));

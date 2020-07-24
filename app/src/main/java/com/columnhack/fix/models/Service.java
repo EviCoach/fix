@@ -1,90 +1,189 @@
 package com.columnhack.fix.models;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.columnhack.fix.models.ServicePerson;
+import androidx.annotation.Nullable;
 
+import com.columnhack.fix.utility.ServiceLocation;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class Service {
+public class Service implements Parcelable {
 
     public static final int ALL_SERVICES = 0;
     public static final int NEAR_BY_SERVICES = 1;
     public static final int MY_ACCOUNT = 2;
     public static final int HELP = 3;
+    public static final String SERVICE_ID = "service_id";
+    public static final String IMAGE_URIS = "image_uris";
 
-    private UUID id;
-    private String mTitle;
-    private String mDescription;
-    private String mContactAddress;
-    private Location mLocation;
-    private String[] mServiceImageUrls;
-    private ServicePerson mServicePerson;
+    private String id = "";
+    private String owner_id = "";
+    private String title = "";
+    private String description = "";
+    private String email = "";
+    private String phone = "";
+    private String contact_address = "";
+    private ServiceLocation location = null;
+    private List<String> service_img_urls = new ArrayList<>();
 
-    //TODO: use the string array later for service images
-    private int[] mServiceImgs;
-
-    public int[] getServiceImgs() {
-        return mServiceImgs;
+    public Service(String title, String description, String email, String phone, String contact_address,
+                   ServiceLocation location, List<String> serviceImageUrls) {
+        this.id = UUID.randomUUID().toString();
+        this.title = title;
+        this.description = description;
+        this.email = email;
+        this.phone = phone;
+        this.contact_address = contact_address;
+        this.location = location;
+        this.service_img_urls = serviceImageUrls;
+        this.owner_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public void setServiceImgs(int[] serviceImgs) {
-        mServiceImgs = serviceImgs;
+    public Service() {
+        this.owner_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public Service(){
-        this.id = UUID.randomUUID();
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public UUID getId() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(email);
+        dest.writeString(phone);
+        dest.writeString(contact_address);
+        dest.writeParcelable(location, flags);
+        dest.writeStringList(service_img_urls);
+        dest.writeString(owner_id);
+    }
+
+    protected Service(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        description = in.readString();
+        email = in.readString();
+        phone = in.readString();
+        contact_address = in.readString();
+        location = in.readParcelable(ServiceLocation.class.getClassLoader());
+        service_img_urls = in.createStringArrayList();
+        owner_id = in.readString();
+    }
+
+    public void setId() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public String getContact_address() {
+        return contact_address;
+    }
+
+    public void setContact_address(String contact_address) {
+        this.contact_address = contact_address;
+    }
+
+    public List<String> getService_img_urls() {
+        return service_img_urls;
+    }
+
+    public void setService_img_urls(List<String> service_img_urls) {
+        this.service_img_urls = service_img_urls;
+    }
+
+    public static final Creator<Service> CREATOR = new Creator<Service>() {
+        @Override
+        public Service createFromParcel(Parcel in) {
+            return new Service(in);
+        }
+
+        @Override
+        public Service[] newArray(int size) {
+            return new Service[size];
+        }
+    };
+
+    public String getId() {
         return id;
     }
 
+    public static int getAllServices() {
+        return ALL_SERVICES;
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
+
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public void setDescription(String description) {
-        mDescription = description;
+        this.description = description;
     }
 
-    public String getContactAddress() {
-        return mContactAddress;
+    public ServiceLocation getLocation() {
+        return location;
     }
 
-    public void setContactAddress(String contactAddress) {
-        mContactAddress = contactAddress;
+    public void setLocation(ServiceLocation location) {
+        this.location = location;
     }
 
-    public Location getLocation() {
-        return mLocation;
+    public String getEmail() {
+        return email;
     }
 
-    public String[] getServiceImageUrls() {
-        return mServiceImageUrls;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setServiceImageUrls(String[] serviceImageUrls) {
-        mServiceImageUrls = serviceImageUrls;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setLocation(Location location) {
-        mLocation = location;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public ServicePerson getServicePerson() {
-        return mServicePerson;
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        boolean isEqual = false;
+        if(obj instanceof Service){
+            Service thisObject = (Service) obj;
+            isEqual = thisObject.id == this.id;
+        }
+
+        return isEqual;
     }
 
-    public void setServicePerson(ServicePerson servicePerson) {
-        mServicePerson = servicePerson;
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

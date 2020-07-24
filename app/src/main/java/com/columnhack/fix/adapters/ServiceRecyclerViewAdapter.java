@@ -11,9 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.columnhack.fix.R;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.activities.ServiceDetailActivity;
+import com.columnhack.fix.utility.ServiceLab;
 
 import java.util.List;
 
@@ -28,6 +30,11 @@ public class ServiceRecyclerViewAdapter extends
         mContext = context;
         mServices = services;
         mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public void refreshServices(){
+        mServices = ServiceLab.getInstance(mContext).getServices(this);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -50,7 +57,6 @@ public class ServiceRecyclerViewAdapter extends
         holder.bind(position);
     }
 
-
     @Override
     public int getItemCount() {
         return mServices.size();
@@ -69,6 +75,10 @@ public class ServiceRecyclerViewAdapter extends
         }
 
         public void bind(int position){
+//            Glide.with(mContext)
+//                    .load(mServices.get(position).getService_img_urls().get(0))
+//                    .placeholder(R.drawable.ic_launcher_foreground)
+//                    .into(serviceImage);
             titleView.setText(mServices.get(position).getTitle());
             descriptionView.setText(mServices.get(position).getDescription());
         }

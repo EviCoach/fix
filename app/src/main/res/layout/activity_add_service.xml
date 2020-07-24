@@ -25,8 +25,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_img_view"
-        tools:listitem="@layout/service_img_items" />
+        app:layout_constraintTop_toBottomOf="@+id/add_img_view" />
 
     <EditText
         android:id="@+id/service_title_edit_text"
@@ -59,6 +58,7 @@
         android:id="@+id/choose_service_location"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_img_view"
         app:layout_constraintStart_toEndOf="@+id/add_img_view"
         app:layout_constraintTop_toTopOf="@+id/add_img_view"
@@ -103,17 +103,41 @@
 
     <TextView
         android:id="@+id/no_images_text_view"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="64dp"
         android:text="Add three or more images for this service"
         android:textSize="16sp"
         android:textStyle="italic"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/service_title_edit_text"
         app:layout_constraintEnd_toEndOf="@+id/service_img_recycler_view"
         app:layout_constraintStart_toStartOf="@+id/service_img_recycler_view"
         app:layout_constraintTop_toBottomOf="@+id/add_img_view" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Choose Service Location"
+        app:layout_constraintBottom_toBottomOf="@+id/choose_service_location"
+        app:layout_constraintStart_toEndOf="@+id/choose_service_location" />
+
+    <Button
+        android:id="@+id/add_service_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textSize="18sp"
+        android:background="@drawable/add_service_custom_btn"
+        android:text="Add Service"
+        android:onClick="addService"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/service_description_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/service_description_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/service_description_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

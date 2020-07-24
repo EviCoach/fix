@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServiceLab;
+import com.columnhack.fix.utility.ServiceLab;
 import com.columnhack.fix.adapters.ServiceImagesPagerAdapter;
 import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
@@ -28,6 +28,7 @@ public class ServiceDetailFragment extends Fragment {
     // vars
     private List<Service> mSimilarServices;
     private ArrayList<Fragment> imgFragments = new ArrayList<>();
+    ServiceRecyclerViewAdapter mAdapter;
 
     // widgets
     private ViewPager servicesImageViewPager;
@@ -37,15 +38,20 @@ public class ServiceDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO: change to real similar and related services later
-        mSimilarServices = ServiceLab.getInstance(getActivity()).getNearbyServices();
+        mAdapter = new ServiceRecyclerViewAdapter(getActivity(), mSimilarServices);
+
+        mAdapter = new ServiceRecyclerViewAdapter(getActivity(), mSimilarServices);
+        mSimilarServices = ServiceLab.getInstance(getActivity()).getServices(mAdapter);
+        mAdapter.refreshServices();
+
+
         int position = 0;
-        for(Service service : mSimilarServices){
+        for (Service service : mSimilarServices) {
             Fragment imgFragment = new ImgFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt(ImgFragment.SERVICE_IMG, service.getServiceImgs()[position]);
             imgFragment.setArguments(bundle);
             imgFragments.add(imgFragment);
-            position = ((position + 1) % service.getServiceImgs().length);
+            position++;
         }
     }
 
@@ -59,9 +65,8 @@ public class ServiceDetailFragment extends Fragment {
         serviceImgIndicatorTabs = view.findViewById(R.id.service_image_indicator_tabs);
         servicesImageViewPager.setAdapter(new ServiceImagesPagerAdapter(getActivity().getSupportFragmentManager(),
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, imgFragments));
-        ServiceRecyclerViewAdapter similarServicesAdapter = new ServiceRecyclerViewAdapter(getActivity(), mSimilarServices);
         serviceImgIndicatorTabs.setupWithViewPager(servicesImageViewPager, true);
-        similarServicesView.setAdapter(similarServicesAdapter);
+        similarServicesView.setAdapter(mAdapter);
         similarServicesView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
 
         return view;

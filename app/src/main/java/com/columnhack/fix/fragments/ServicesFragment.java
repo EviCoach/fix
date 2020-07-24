@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
-import com.columnhack.fix.ServiceLab;
+import com.columnhack.fix.utility.ServiceLab;
 import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
 import com.google.firebase.database.DatabaseReference;
@@ -29,11 +29,14 @@ public class ServicesFragment extends Fragment {
 
     /*widgets*/
     private RecyclerView mRecyclerView;
+    private ServiceRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mServices = ServiceLab.getInstance(getActivity()).getServices();
+        mAdapter = new ServiceRecyclerViewAdapter(getActivity(), mServices);
+        mServices = ServiceLab.getInstance(getActivity()).getServices(mAdapter);
+        mAdapter.refreshServices();
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference("services");
     }
@@ -45,8 +48,9 @@ public class ServicesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_services, container, false);
         mRecyclerView = view.findViewById(R.id.service_recycler_view);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        mRecyclerView.setAdapter(new ServiceRecyclerViewAdapter(getActivity(), mServices));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, RecyclerView.VERTICAL, false));
+
+        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 }
