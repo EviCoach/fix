@@ -14,5 +14,6 @@
     <string name="undo_delete">UNDO</string>
     <string name="choose_from_map">Choose From Map</string>
     <string name="use_current_location">Use Current Location</string>
+    <string name="google_map_markers">for_google_map_markers</string>
 
 </resources>

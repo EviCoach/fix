@@ -2,21 +2,21 @@ package com.columnhack.fix.utility;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.columnhack.fix.adapters.MyServicesRecyclerViewAdapter;
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
-import com.columnhack.fix.adapters.ServiceRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryDataEventListener;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,14 +26,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 
 public class ServiceLab {
     private static ServiceLab sServiceLab;
     private static Context sContext;
+
+    boolean servicesLoaded = false;
+    int radius = 10;
 
     private Location mCurrentLocation = null;
 
@@ -57,7 +57,6 @@ public class ServiceLab {
     public void setCurrentLocation(Location currentLocation) {
         mCurrentLocation = currentLocation;
     }
-
 
     public List<Service> getServices(final RecyclerView.Adapter adapter) {
         services.clear();
@@ -108,11 +107,17 @@ public class ServiceLab {
         return services;
     } // ends getServices
 
-    boolean serviceFound = false;
-    int radius = 0;
 
-    public List<Service> getNearbyServices(final NearbyServicesRecyclerViewAdapter adapter, String query) {
+//    int previousRadius = radius + 1;
+
+
+    public List<Service> getNearbyServices(final NearbyServicesRecyclerViewAdapter adapter, String query, final GoogleMap map) {
         nearbyServices.clear();
+
+//         if (query.equals(sContext.getString(R.string.google_map_markers))){
+//             if(nearbyServices.size() > 0){
+//             return nearbyServices;
+//         }
         /**
          *1.Make the geofire request for the nearby services
          * get a list of first twenty services close by
@@ -126,7 +131,7 @@ public class ServiceLab {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
                 .child("services");
         GeoFire geoFire = new GeoFire(dbRef);
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(getCurrentLocation().getLatitude(),
+        final GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(getCurrentLocation().getLatitude(),
                 getCurrentLocation().getLongitude()), radius);
         geoQuery.removeAllListeners();
 
@@ -136,13 +141,20 @@ public class ServiceLab {
             @Override
             public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
 
-                Toast.makeText(sContext, "Service Found", Toast.LENGTH_SHORT).show();
-                Service service = getEachService(dataSnapshot);
-                nearbyServices.add(service);
-                serviceCounter++;
-                serviceFound = true;
-                adapter.changeServices(nearbyServices);
-                return;
+                if (nearbyServices.size() < 10 && radius <= 50) {
+                    Toast.makeText(sContext, "Service Found", Toast.LENGTH_SHORT).show();
+                    Service service = getEachService(dataSnapshot);
+                    nearbyServices.add(service);
+
+                    LatLng latLng = new LatLng(service.getLocation().getLatitude(),
+                            service.getLocation().getLongitude());
+                    map.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(service.getTitle())
+                            .snippet(service.getPhone())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    serviceCounter++;
+                }
             }
 
             @Override
@@ -162,10 +174,22 @@ public class ServiceLab {
 
             @Override
             public void onGeoQueryReady() {
-                if (!serviceFound) {
-                    radius++;
-                    getNearbyServices(adapter, "query");
-                }
+//                if (!servicesLoaded) {
+
+//                    if ((radius - previousRadius == 0) && (!nearbyServices.isEmpty())) {
+                        // we are done querying geofire
+                        // no more nearby services
+                        servicesLoaded = true;
+                        adapter.changeServices(nearbyServices);
+//                        geoQuery.removeGeoQueryEventListener(this);
+//                        return;
+//                    }
+//                    radius++;
+
+//                    if (radius < 50) {
+//                        getNearbyServices(adapter, "query");
+//                    }
+//                }
             }
 
             @Override

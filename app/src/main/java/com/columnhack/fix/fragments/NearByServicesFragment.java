@@ -3,6 +3,7 @@ package com.columnhack.fix.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.columnhack.fix.R;
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
+import com.columnhack.fix.observers.ObservableLocation;
 import com.columnhack.fix.utility.ServiceLab;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -46,7 +49,7 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
-    private Location mServiceLocation;
+    private Location mUserLocation;
     private NearbyLocationCallback mLocationCallback;
 
     List<Service> mNearbyServices = new ArrayList<>();
@@ -57,7 +60,6 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
-
         requestLocationUpdates();
     }
 
@@ -69,7 +71,7 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     private void requestLocationUpdates() {
         if (checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (mServiceLocation == null) {
+            if (mUserLocation == null) {
                 mFusedLocationClient = new FusedLocationProviderClient(getActivity());
                 mLocationRequest = new LocationRequest();
                 mLocationCallback = new NearbyLocationCallback();
@@ -77,9 +79,6 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
                 mLocationRequest.setFastestInterval(2000);
                 mLocationRequest.setInterval(2000);
                 mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, getMainLooper());
-                if (mServiceLocation != null) {
-                    mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-                }
             }
 
             return;
@@ -158,29 +157,35 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
         mMap = googleMap;
 
         // customize the app with service location and markers here
-        addServiceMarkers();
     }
 
     private void addServiceMarkers() {
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(6.8, 3.1))).setVisible(true);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(7, 3.5))).setVisible(true);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(7, 4))).setVisible(true);
+        LatLng zoomMapLocation = new LatLng(mUserLocation.getLatitude(),
+                mUserLocation.getLongitude());
+
+        mMap.addMarker(new MarkerOptions()
+                .position(zoomMapLocation)
+                .title("My current location")
+                .snippet("and snippet")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
         // Move the camera instantly to location with zoom of 15
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(7, 3.9), 10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomMapLocation, 13));
         // zoom in, animating the camera
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
     }
 
     private class NearbyLocationCallback extends LocationCallback {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
-            mServiceLocation = locationResult.getLastLocation();
-            ServiceLab.getInstance(getActivity()).setCurrentLocation(mServiceLocation);
-            mNearbyServices = ServiceLab.getInstance(getActivity()).getNearbyServices(mAdapter, "query");
+            mUserLocation = locationResult.getLastLocation();
+            ServiceLab.getInstance(getActivity()).setCurrentLocation(mUserLocation);
+            mNearbyServices = ServiceLab.getInstance(getActivity()).getNearbyServices(mAdapter, "query", mMap);
+            addServiceMarkers();
+            mFusedLocationClient.removeLocationUpdates(this);
         }
     }
 }

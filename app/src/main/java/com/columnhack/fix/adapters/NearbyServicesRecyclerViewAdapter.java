@@ -32,6 +32,10 @@ public class NearbyServicesRecyclerViewAdapter extends
         notifyDataSetChanged();
     }
 
+    public List<Service> getAdapterServices(){
+        return mNearbyServices;
+    }
+
     @NonNull
     @Override
     public NearbyServicesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
