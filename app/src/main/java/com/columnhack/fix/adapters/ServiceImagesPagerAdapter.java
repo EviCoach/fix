@@ -17,6 +17,10 @@ public class ServiceImagesPagerAdapter extends FragmentStatePagerAdapter {
         mFragments = fragments;
     }
 
+    @Override
+    public float getPageWidth(final int position) {
+        return 0.7f;
+    }
 
     @NonNull
     @Override

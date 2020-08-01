@@ -3,7 +3,6 @@ package com.columnhack.fix.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.columnhack.fix.R;
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
 import com.columnhack.fix.models.Service;
-import com.columnhack.fix.observers.ObservableLocation;
 import com.columnhack.fix.utility.ServiceLab;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -30,10 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +75,6 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
                 mLocationRequest.setInterval(2000);
                 mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, getMainLooper());
             }
-
-            return;
         } else {
             // Request for permission here
             String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
@@ -161,15 +154,8 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
 
     private void addServiceMarkers() {
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
         LatLng zoomMapLocation = new LatLng(mUserLocation.getLatitude(),
                 mUserLocation.getLongitude());
-
-        mMap.addMarker(new MarkerOptions()
-                .position(zoomMapLocation)
-                .title("My current location")
-                .snippet("and snippet")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
         // Move the camera instantly to location with zoom of 15
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomMapLocation, 13));

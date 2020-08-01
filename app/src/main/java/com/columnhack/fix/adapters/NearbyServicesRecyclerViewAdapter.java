@@ -1,6 +1,7 @@
 package com.columnhack.fix.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
+import com.columnhack.fix.activities.ServiceDetailActivity;
 import com.columnhack.fix.models.Service;
 
 import java.util.List;
@@ -58,6 +60,20 @@ public class NearbyServicesRecyclerViewAdapter extends
         public NearbyServicesHolder(@NonNull View itemView) {
             super(itemView);
             serviceTitleView = itemView.findViewById(R.id.nearby_service_desc);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSelectedService();
+                }
+            });
+        }
+
+        private void openSelectedService() {
+            Service service = mNearbyServices.get(getAdapterPosition());
+            Intent intent = new Intent(mContext, ServiceDetailActivity.class);
+            intent.putExtra(ServiceDetailActivity.SELECTED_SERVICE, service);
+            mContext.startActivity(intent);
         }
     }
 }

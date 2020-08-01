@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ServiceLocation implements Parcelable {
-    private double latitude;
-    private double longitude;
+    private double latitude = 0.0;
+    private double longitude = 0.0;
 
     public ServiceLocation(double latitude, double longitude) {
         this.latitude = latitude;

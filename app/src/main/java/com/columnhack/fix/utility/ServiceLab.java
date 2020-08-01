@@ -1,6 +1,9 @@
 package com.columnhack.fix.utility;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.widget.Toast;
 
@@ -8,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
+import com.columnhack.fix.database.QueryContractClass;
+import com.columnhack.fix.database.QueryContractClass.RecentQuery;
+import com.columnhack.fix.database.RecentQueryOpenHelper;
 import com.columnhack.fix.models.Service;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -32,6 +38,8 @@ public class ServiceLab {
     private static ServiceLab sServiceLab;
     private static Context sContext;
 
+    private RecentQueryOpenHelper mDbOpenHelper;
+
     boolean servicesLoaded = false;
     int radius = 10;
 
@@ -48,6 +56,20 @@ public class ServiceLab {
         sContext = context;
 
         return sServiceLab;
+    }
+
+    public Cursor getRecentQueries() {
+        mDbOpenHelper = new RecentQueryOpenHelper(sContext);
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+        String[] queryColumn = {RecentQuery.COLUMN_QUERY_STRING};
+        return db.query(RecentQuery.TABLE_NAME,
+                queryColumn,
+                null, null, null, null, null);
+
+    }
+
+    public void closedDB() {
+        mDbOpenHelper.close();
     }
 
     public Location getCurrentLocation() {
@@ -76,6 +98,8 @@ public class ServiceLab {
                         String contact_address = serviceSnapshot.child("contact_address").getValue(String.class);
                         String desc = serviceSnapshot.child("description").getValue(String.class);
                         Iterable<DataSnapshot> imgUrls = serviceSnapshot.child("img_urls").getChildren();
+                        ServiceLocation location = serviceSnapshot.child("location").getValue(ServiceLocation.class);
+
 
                         Service service = new Service();
 
@@ -85,6 +109,7 @@ public class ServiceLab {
 
                         service.setId(id);
                         service.setTitle(title);
+                        service.setLocation(location);
                         service.setPhone(phone);
                         service.setEmail(email);
                         service.setContact_address(contact_address);
@@ -108,16 +133,8 @@ public class ServiceLab {
     } // ends getServices
 
 
-//    int previousRadius = radius + 1;
-
-
     public List<Service> getNearbyServices(final NearbyServicesRecyclerViewAdapter adapter, String query, final GoogleMap map) {
         nearbyServices.clear();
-
-//         if (query.equals(sContext.getString(R.string.google_map_markers))){
-//             if(nearbyServices.size() > 0){
-//             return nearbyServices;
-//         }
         /**
          *1.Make the geofire request for the nearby services
          * get a list of first twenty services close by
@@ -145,6 +162,7 @@ public class ServiceLab {
                     Toast.makeText(sContext, "Service Found", Toast.LENGTH_SHORT).show();
                     Service service = getEachService(dataSnapshot);
                     nearbyServices.add(service);
+
 
                     LatLng latLng = new LatLng(service.getLocation().getLatitude(),
                             service.getLocation().getLongitude());
@@ -174,22 +192,9 @@ public class ServiceLab {
 
             @Override
             public void onGeoQueryReady() {
-//                if (!servicesLoaded) {
-
-//                    if ((radius - previousRadius == 0) && (!nearbyServices.isEmpty())) {
-                        // we are done querying geofire
-                        // no more nearby services
-                        servicesLoaded = true;
-                        adapter.changeServices(nearbyServices);
-//                        geoQuery.removeGeoQueryEventListener(this);
-//                        return;
-//                    }
-//                    radius++;
-
-//                    if (radius < 50) {
-//                        getNearbyServices(adapter, "query");
-//                    }
-//                }
+                servicesLoaded = true;
+                adapter.changeServices(nearbyServices);
+                geoQuery.removeGeoQueryEventListener(this);
             }
 
             @Override
@@ -239,6 +244,15 @@ public class ServiceLab {
         query.removeEventListener(listener);
         query.addValueEventListener(listener);*/
         return myServices;
+    }
+
+    public void saveQueryString(String queryString) {
+        mDbOpenHelper = new RecentQueryOpenHelper(sContext);
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+        String[] queryColumn = {RecentQuery.COLUMN_QUERY_STRING};
+        ContentValues value = new ContentValues();
+        value.put(RecentQuery.COLUMN_QUERY_STRING, queryString);
+        db.insert(RecentQuery.TABLE_NAME, null, value);
     }
 
     class MyServicesListener implements ValueEventListener {
