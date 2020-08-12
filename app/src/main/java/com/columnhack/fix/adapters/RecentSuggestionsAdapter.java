@@ -64,9 +64,9 @@ public class RecentSuggestionsAdapter extends Adapter<RecentSuggestionsAdapter.S
             setQueryTextIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mContext instanceof QueryTextSetters){
+//                    if (mContext instanceof QueryTextSetters){
                         ((QueryTextSetters) mContext).setQueryText(mRecentQueries.get(getAdapterPosition()));
-                    }
+//                    }
                 }
             });
 

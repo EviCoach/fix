@@ -31,7 +31,38 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toBottomOf="@+id/map_card"
+        tools:visibility="invisible"
         tools:listitem="@layout/nearby_service_item" />
+
+    <TextView
+        android:id="@+id/disabled_location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device Location Disabled"
+        android:visibility="invisible"
+        android:textAlignment="center"
+        android:textColor="@color/darkGrey"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toBottomOf="@+id/map_card" />
+
+    <Button
+        android:id="@+id/enable_location_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="Go to Location Settings"
+        android:visibility="invisible"
+        android:background="@drawable/add_service_custom_btn"
+        android:textColor="@android:color/white"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

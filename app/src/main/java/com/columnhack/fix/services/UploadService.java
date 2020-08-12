@@ -3,7 +3,10 @@ package com.columnhack.fix.services;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,9 +28,13 @@ import java.util.ArrayList;
 
 public class UploadService extends Service {
     public static final String TAG = UploadService.class.getSimpleName();
+    public static final String RECEIVER = "receiver";
+    public static final int UPLOAD_COMPLETE = 230;
+    public static final String DONE = "done";
 
     private ArrayList<Uri> mImageUri = new ArrayList<>();
     private ArrayList<String> mServiceImagesUrls;
+    private ResultReceiver mUploadReceiver;
 
 
     private void executeUpload(Uri uri, final int currentIndex, final String serviceId) {
@@ -65,13 +72,26 @@ public class UploadService extends Service {
                         }
                     }
                 });
+
                 // Cause a recursion here
                 if (currentIndex < mImageUri.size()) {
                     int nextIndex = currentIndex + 1;
                     if (nextIndex < mImageUri.size()) {
                         executeUpload(mImageUri.get(nextIndex), nextIndex, serviceId);
                     }
-                } else return;
+                }
+
+                if (currentIndex == mImageUri.size() - 1) {
+                    // Send a response back to the activity that started the service
+                    // image upload complete,
+                    // so the loading dialog can be stopped
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(DONE, true);
+                    mUploadReceiver.send(UPLOAD_COMPLETE, bundle);
+                    Log.d(TAG, "onSuccess: upload complete");
+                    stopSelf();
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -97,15 +117,12 @@ public class UploadService extends Service {
         mServiceImagesUrls = new ArrayList<>();
 
         String serviceId = intent.getStringExtra(com.columnhack.fix.models.Service.SERVICE_ID);
+        mUploadReceiver = intent.getParcelableExtra(RECEIVER);
 
 
         mImageUri = (ArrayList<Uri>) intent.getSerializableExtra(com.columnhack.fix.models.Service.IMAGE_URIS);
         int i = 0;
         executeUpload(mImageUri.get(i), i, serviceId);
-
-        if (i == mImageUri.size()) {
-            stopSelf();
-        }
 
         return Service.START_REDELIVER_INTENT;
     }

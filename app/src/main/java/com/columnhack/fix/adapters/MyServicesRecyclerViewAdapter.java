@@ -49,6 +49,7 @@ public class MyServicesRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull MyServicesHolder holder, int position) {
         holder.serviceTitleView.setText(mMyServices.get(position).getTitle());
+        holder.serviceDescView.setText(mMyServices.get(position).getDescription());
         // Very necessary, if you remove the following line, you'll get this exception:
         // No suitable parent found from the given view. Please provide a valid view
         holder.setIsRecyclable(false);
@@ -83,9 +84,11 @@ public class MyServicesRecyclerViewAdapter extends
 
     public class MyServicesHolder extends RecyclerView.ViewHolder {
         private TextView serviceTitleView;
+        private TextView serviceDescView;
         public MyServicesHolder(@NonNull View itemView) {
             super(itemView);
-            serviceTitleView = itemView.findViewById(R.id.nearby_service_desc);
+            serviceTitleView = itemView.findViewById(R.id.nearby_title_view);
+            serviceDescView = itemView.findViewById(R.id.nearby_desc_view);
         }
     }
 }

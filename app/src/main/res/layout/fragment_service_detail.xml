@@ -15,12 +15,12 @@
         android:weightSum="100"
         android:minHeight="800dp">
 
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/service_images_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            >
-        </androidx.viewpager.widget.ViewPager>
+            android:layout_height="320dp"
+            android:layout_marginTop="32dp"/>
 
 
         <com.google.android.material.tabs.TabLayout
@@ -33,7 +33,7 @@
             app:tabBackground="@drawable/tab_selector"/>
 
         <TextView
-            android:id="@+id/service_title"
+            android:id="@+id/service_detail_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

@@ -48,6 +48,7 @@ public class NearbyServicesRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull NearbyServicesHolder holder, int position) {
         holder.serviceTitleView.setText(mNearbyServices.get(position).getTitle());
+        holder.serviceTitleDesc.setText(mNearbyServices.get(position).getDescription());
     }
 
     @Override
@@ -55,11 +56,14 @@ public class NearbyServicesRecyclerViewAdapter extends
         return mNearbyServices.size();
     }
 
+
     public class NearbyServicesHolder extends RecyclerView.ViewHolder {
         private TextView serviceTitleView;
+        private TextView serviceTitleDesc;
         public NearbyServicesHolder(@NonNull View itemView) {
             super(itemView);
-            serviceTitleView = itemView.findViewById(R.id.nearby_service_desc);
+            serviceTitleView = itemView.findViewById(R.id.nearby_title_view);
+            serviceTitleDesc = itemView.findViewById(R.id.nearby_desc_view);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

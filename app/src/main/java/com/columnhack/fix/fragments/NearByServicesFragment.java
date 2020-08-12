@@ -1,12 +1,16 @@
 package com.columnhack.fix.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +42,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class NearByServicesFragment extends Fragment implements OnMapReadyCallback {
 
+    public static final String TAG = NearByServicesFragment.class.getSimpleName();
     public static final int LOCATION_REQUEST_CODE = 12;
     private MapView mMapView;
     private GoogleMap mMap;
@@ -50,6 +55,8 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     List<Service> mNearbyServices = new ArrayList<>();
     private RecyclerView mNearbyServicesRecyclerView;
     private NearbyServicesRecyclerViewAdapter mAdapter;
+    private TextView mDisabledLocationText;
+    private Button mEnableLocationBtn;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +68,19 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: called");
+        if (ServiceLab.getInstance(getActivity()).isLocationEnabled()) {
+            requestLocationUpdates();
+            updateUI();
+        }
+    }
+
+    public NearbyServicesRecyclerViewAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    public GoogleMap getGoogleMap() {
+        return mMap;
     }
 
     private void requestLocationUpdates() {
@@ -127,10 +147,34 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
 
 
         mNearbyServicesRecyclerView = view.findViewById(R.id.nearby_services_recyclerview);
-        mNearbyServicesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
-        mNearbyServicesRecyclerView.setAdapter(mAdapter);
+        mEnableLocationBtn = view.findViewById(R.id.enable_location_btn);
+        if (mEnableLocationBtn != null)
+            mEnableLocationBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+        mDisabledLocationText = view.findViewById(R.id.disabled_location_text);
+        updateUI();
         return view;
+    }
+
+    private void updateUI() {
+        if (!ServiceLab.getInstance(getActivity()).isLocationEnabled()) {
+            mDisabledLocationText.setVisibility(View.VISIBLE);
+            mEnableLocationBtn.setVisibility(View.VISIBLE);
+            mNearbyServicesRecyclerView.setVisibility(View.INVISIBLE);
+        } else {
+            if (mDisabledLocationText != null)
+                mDisabledLocationText.setVisibility(View.INVISIBLE);
+            if (mEnableLocationBtn != null )
+                mEnableLocationBtn.setVisibility(View.INVISIBLE);
+            mNearbyServicesRecyclerView.setVisibility(View.VISIBLE);
+            mNearbyServicesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mAdapter = new NearbyServicesRecyclerViewAdapter(getActivity(), mNearbyServices);
+            mNearbyServicesRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -148,19 +192,20 @@ public class NearByServicesFragment extends Fragment implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mMap = googleMap;
-
-        // customize the app with service location and markers here
     }
 
     private void addServiceMarkers() {
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        LatLng zoomMapLocation = new LatLng(mUserLocation.getLatitude(),
-                mUserLocation.getLongitude());
+        if (mMap != null) {
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            LatLng zoomMapLocation = new LatLng(mUserLocation.getLatitude(),
+                    mUserLocation.getLongitude());
 
-        // Move the camera instantly to location with zoom of 15
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomMapLocation, 13));
-        // zoom in, animating the camera
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+            // Move the camera instantly to location with zoom of 15
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomMapLocation, 13.5f));
+            // zoom in, animating the camera
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(13.5f), 2000, null);
+        }
     }
 
     private class NearbyLocationCallback extends LocationCallback {

@@ -15,5 +15,9 @@
     <string name="choose_from_map">Choose From Map</string>
     <string name="use_current_location">Use Current Location</string>
     <string name="google_map_markers">for_google_map_markers</string>
+    <string name="gps_not_found_title">Location Settings Disabled</string>
+    <string name="gps_not_found_message">Your device location is turned off. Go to location settings to enable it.</string>
+    <string name="go_to_settings">Location Settings</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

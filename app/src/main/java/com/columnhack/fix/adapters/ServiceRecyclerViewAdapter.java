@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.columnhack.fix.R;
-import com.columnhack.fix.fragments.ServiceDetailFragment;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.activities.ServiceDetailActivity;
 import com.columnhack.fix.utility.ServiceLab;
@@ -66,7 +65,7 @@ public class ServiceRecyclerViewAdapter extends
         public ServiceHolder(@NonNull View itemView) {
             super(itemView);
             serviceImage = itemView.findViewById(R.id.service_image);
-            titleView = itemView.findViewById(R.id.nearby_service_desc);
+            titleView = itemView.findViewById(R.id.service_title);
             descriptionView = itemView.findViewById(R.id.service_desc);
 
             itemView.setOnClickListener(new View.OnClickListener() {

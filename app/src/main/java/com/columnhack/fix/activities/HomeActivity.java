@@ -25,19 +25,23 @@ import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
 
 import com.columnhack.fix.R;
+import com.columnhack.fix.adapters.NearbyServicesRecyclerViewAdapter;
 import com.columnhack.fix.adapters.ServicePagerAdapter;
 import com.columnhack.fix.database.QueryContractClass;
+import com.columnhack.fix.fragments.ContactedAndViewedFragment;
 import com.columnhack.fix.fragments.RecentSuggestionsFragment;
+import com.columnhack.fix.interfaces.ChangeFragment;
 import com.columnhack.fix.interfaces.QueryTextSetters;
 import com.columnhack.fix.models.Service;
 import com.columnhack.fix.utility.ServiceLab;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>, QueryTextSetters {
+        implements LoaderManager.LoaderCallbacks<Cursor>, QueryTextSetters, ChangeFragment {
 
     public static final int LOADER_GET_QUERY_STRING = 210;
     public static final int LOADER_SAVE_QUERY_STRING = 220;
@@ -51,6 +55,7 @@ public class HomeActivity extends AppCompatActivity
     private List<String> mRecentQueries = new ArrayList<>();
     private Cursor mQueryCursor;
     private List<String> mFilteredList = new ArrayList<>();
+    private ServicePagerAdapter mServicePagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,10 +65,9 @@ public class HomeActivity extends AppCompatActivity
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
 
         mServiceViewPager = findViewById(R.id.service_view_pager);
-        ServicePagerAdapter servicePagerAdapter =
-                new ServicePagerAdapter(getSupportFragmentManager(),
-                        FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mServiceViewPager.setAdapter(servicePagerAdapter);
+        mServicePagerAdapter = new ServicePagerAdapter(getSupportFragmentManager(),
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        mServiceViewPager.setAdapter(mServicePagerAdapter);
         mFm = getSupportFragmentManager();
 
         mServiceViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -195,7 +199,7 @@ public class HomeActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
                 bundle.putString(QUERY_STRING, query);
                 // Persist the query string
-                AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>(){
+                AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>() {
 
                     @Override
                     protected Void doInBackground(String... strings) {
@@ -209,6 +213,19 @@ public class HomeActivity extends AppCompatActivity
                 hideKeyboard(HomeActivity.this);
                 displayNearbyServicesFragment();
 
+
+                /**
+                 * Query fire base for the nearby services with the query string
+                 * 1. query geofire for nearby services
+                 * 2. search for services that contains the query string
+                 * in their title or description
+                 * 3. return those services
+                 */
+                NearbyServicesRecyclerViewAdapter nearbyServicesRecyclerViewAdapter =
+                        mServicePagerAdapter.getNearbyFragment().getAdapter();
+                GoogleMap googleMap = mServicePagerAdapter.getNearbyFragment().getGoogleMap();
+                ServiceLab.getInstance(HomeActivity.this).search(query, nearbyServicesRecyclerViewAdapter, googleMap);
+
                 return true;
             }
 
@@ -217,12 +234,12 @@ public class HomeActivity extends AppCompatActivity
                 // Filter the recent queries as the user type
                 mFilteredList.clear();
 
-                for (int i = 0; i < mRecentQueries.size(); i++){
-                    if(mRecentQueries.get(i).toLowerCase().contains(newText.toLowerCase())){
+                for (int i = 0; i < mRecentQueries.size(); i++) {
+                    if (mRecentQueries.get(i).toLowerCase().contains(newText.toLowerCase())) {
                         // put this recent query in the new List
                         mFilteredList.add(mRecentQueries.get(i));
                     }
-                    mRecentSuggestionsFragment.getAdapter().changeRecentQueries(mFilteredList);
+                    ServiceLab.getInstance(HomeActivity.this).changeRecentQueries(mFilteredList);
                 }
                 return false;
             }
@@ -234,6 +251,7 @@ public class HomeActivity extends AppCompatActivity
     private void openRecentQueriesFragment() {
         // open the recent queries fragment
         mRecentSuggestionsFragment = RecentSuggestionsFragment.newInstance(mRecentQueries);
+        ServiceLab.getInstance(this).setRecentSuggestionFragment(mRecentSuggestionsFragment);
         mFm.beginTransaction()
                 .add(R.id.search_suggestion_frg_container, mRecentSuggestionsFragment)
                 .addToBackStack("recent_fragment")
@@ -315,6 +333,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void setQueryText(String text) {
+        mSearchView.setIconified(false);
         mSearchView.setQuery(text, false);
 
     }
@@ -322,5 +341,44 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void setAndQueryText(String text) {
         mSearchView.setQuery(text, true);
+    }
+
+    private void startInteractedServicesFragment(String whichServices) {
+        ContactedAndViewedFragment fragment = ContactedAndViewedFragment.newInstance(whichServices);
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack("contacted_recent_viewed", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fm.beginTransaction().replace(R.id.search_suggestion_frg_container, fragment)
+                .addToBackStack("contacted_recent_viewed")
+                .commit();
+    }
+
+    @Override
+    public void showContacted() {
+        startInteractedServicesFragment(Service.CONTACTED);
+    }
+
+    @Override
+    public void showViewed() {
+        startInteractedServicesFragment(Service.VIEWED);
+    }
+
+    @Override
+    public void showRecent() {
+        mRecentQueries.clear();
+        Cursor recentQueries = ServiceLab.getInstance(this).getRecentQueries();
+        while (recentQueries.moveToNext()) {
+            int columnIndex = recentQueries.getColumnIndex(QueryContractClass.RecentQuery.COLUMN_QUERY_STRING);
+            String queryString = recentQueries.getString(columnIndex);
+            mRecentQueries.add(queryString);
+        }
+        RecentSuggestionsFragment recentSuggestionsFragment = RecentSuggestionsFragment
+                .newInstance(mRecentQueries);
+        ServiceLab.getInstance(this).setRecentSuggestionFragment(recentSuggestionsFragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.search_suggestion_frg_container, recentSuggestionsFragment)
+                .addToBackStack("contacted_recent_viewed")
+                .commit();
+
     }
 }

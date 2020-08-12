@@ -2,26 +2,39 @@ package com.columnhack.fix.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.columnhack.fix.R;
+import com.columnhack.fix.utility.PictureUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SelectedImgsAdapter extends RecyclerView.Adapter<SelectedImgsAdapter.SelectedImgHolder> {
 
     Context mContext;
-    ArrayList<Bitmap> mImgBitmaps;
+    List<Uri> mImgUris;
 
-    public SelectedImgsAdapter(Context context, ArrayList<Bitmap> imgBitmaps) {
+    public SelectedImgsAdapter(Context context, ArrayList<Uri> imgUris) {
         mContext = context;
-        mImgBitmaps = imgBitmaps;
+        mImgUris = imgUris;
     }
 
     @NonNull
@@ -39,11 +52,11 @@ public class SelectedImgsAdapter extends RecyclerView.Adapter<SelectedImgsAdapte
 
     @Override
     public int getItemCount() {
-        return mImgBitmaps.size();
+        return mImgUris.size();
     }
 
 
-    class SelectedImgHolder extends RecyclerView.ViewHolder{
+    class SelectedImgHolder extends RecyclerView.ViewHolder {
         ImageView selectedImg;
 
         public SelectedImgHolder(@NonNull View itemView) {
@@ -51,8 +64,9 @@ public class SelectedImgsAdapter extends RecyclerView.Adapter<SelectedImgsAdapte
             selectedImg = itemView.findViewById(R.id.service_img);
         }
 
-        public void bind(int position){
-            selectedImg.setImageBitmap(mImgBitmaps.get(position));
+        public void bind(final int position) {
+
+            selectedImg.setImageBitmap(PictureUtils.getScaledBitmap(mContext, mImgUris.get(position)));
         }
     }
 }

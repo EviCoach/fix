@@ -54,7 +54,7 @@ public class SimilarServicesRyclerviewAdapter extends
         public SimilarServicesHolder(@NonNull View itemView) {
             super(itemView);
             serviceImage = itemView.findViewById(R.id.service_image);
-            titleView = itemView.findViewById(R.id.nearby_service_desc);
+            titleView = itemView.findViewById(R.id.service_title);
             descriptionView = itemView.findViewById(R.id.service_desc);
         }
 

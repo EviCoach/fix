@@ -22,9 +22,14 @@ public class Service implements Parcelable {
     public static final String SERVICE_ID = "service_id";
     public static final String IMAGE_URIS = "image_uris";
 
+    public static final String CONTACTED = "contacted";
+    public static final String VIEWED = "viewed";
+    public static final String RECENT = "recent";
+
     private String id = "";
     private String owner_id = "";
     private String title = "";
+    private String tags = "";
     private String description = "";
     private String email = "";
     private String phone = "";
@@ -32,7 +37,7 @@ public class Service implements Parcelable {
     private ServiceLocation location = null;
     private List<String> service_img_urls = new ArrayList<>();
 
-    public Service(String title, String description, String email, String phone, String contact_address,
+    public Service(String title, String description, String tags, String email, String phone, String contact_address,
                    ServiceLocation location, List<String> serviceImageUrls) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
@@ -42,6 +47,7 @@ public class Service implements Parcelable {
         this.contact_address = contact_address;
         this.location = location;
         this.service_img_urls = serviceImageUrls;
+        this.tags = tags;
         this.owner_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
@@ -65,6 +71,7 @@ public class Service implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeStringList(service_img_urls);
         dest.writeString(owner_id);
+        dest.writeString(tags);
     }
 
     protected Service(Parcel in) {
@@ -77,6 +84,7 @@ public class Service implements Parcelable {
         location = in.readParcelable(ServiceLocation.class.getClassLoader());
         service_img_urls = in.createStringArrayList();
         owner_id = in.readString();
+        tags = in.readString();
     }
 
     public void setId() {
@@ -185,5 +193,12 @@ public class Service implements Parcelable {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public void setTags(String serviceTags) {
+        tags = serviceTags;
+    }
+    public String getTags(){
+        return tags;
     }
 }

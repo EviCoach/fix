@@ -14,6 +14,7 @@ import com.columnhack.fix.fragments.ServicesFragment;
 public class ServicePagerAdapter extends FragmentStatePagerAdapter {
 
 
+    private NearByServicesFragment mNearByServicesFragment;
 
     public ServicePagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -26,13 +27,18 @@ public class ServicePagerAdapter extends FragmentStatePagerAdapter {
             case Service.ALL_SERVICES:
              return new ServicesFragment();
             case Service.NEAR_BY_SERVICES:
-                return new NearByServicesFragment();
+                mNearByServicesFragment = new NearByServicesFragment();
+                return mNearByServicesFragment;
             case Service.MY_ACCOUNT:
                 return new AccountFragment();
             case Service.HELP:
                 return new HelpFragment();
         }
         return null;
+    }
+
+    public NearByServicesFragment getNearbyFragment(){
+        return mNearByServicesFragment;
     }
 
     @Override
